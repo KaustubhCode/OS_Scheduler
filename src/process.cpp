@@ -8,10 +8,13 @@ public:
 	int pid;
 	int start_time;
 	int proc_length;
+	int time_left;
 	int status;
 	
 	// Functions
-	void run(){
-		
+
+	//Run for t seconds
+	void run(int t){
+		time_left = time_left-t;
 	}
 }
