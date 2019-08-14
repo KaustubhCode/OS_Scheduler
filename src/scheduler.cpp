@@ -2,6 +2,12 @@
 
 using namespace std;
 
-int main(){
+class Scheduler{
+	// Variables
+public:
 	
+	// Functions
+	void run(){
+		
+	}
 }
