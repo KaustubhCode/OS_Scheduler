@@ -10,13 +10,13 @@ void print_table(Process p[], int n)
 {
     int i;
 
-    puts("+-----+------------+--------------+-----------------+");
-    puts("| PID | Burst Time | Waiting Time | Turnaround Time |");
-    puts("+-----+------------+--------------+-----------------+");
+    puts("+-----+------------+--------------+------------------+--------------+----------------+");
+    puts("| PID | Burst Time | Waiting Time | Turn-Around Time | Arrival Time | Completion Time |");
+    puts("+-----+------------+--------------+------------------+--------------+----------------+");
 
     for(i=0; i<n; i++) {
-        printf("| %2d  |     %2d     |      %2d      |        %2d       |\n"
-               , p[i].pid, p[i].burst_time, p[i].waiting_time, p[i].turnaround_time );
+        printf("| %2d  |     %2d     |      %2d      |        %2d       |      %2d      |       %2d       |\n"
+               , p[i].pid, p[i].burst_time, p[i].waiting_time, p[i].turnaround_time, p[i].arrivl_time, p[i].completion_time);
         puts("+-----+------------+--------------+-----------------+");
     }
 
