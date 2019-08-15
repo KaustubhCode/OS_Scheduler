@@ -63,7 +63,9 @@ using namespace std;
 
 int main(){
 	cout << "TEST" << endl;
-
-
+	FIFO_scheduler fifo;
+	RR_scheduler rr;
+	SJF_scheduler sjf;
+	
 
 }

@@ -18,7 +18,7 @@ public:
 			time_to_run = proc_to_run.time_left;
 			int time_left = proc_to_run.run(time_to_run);
 			if (time_left == 0){
-				proc_to_run.kill(current_time);
+				proc_to_run.kill(current_time+time_to_run);
 				proc_q.pop();
 			}else{
 				cout << "ERROR: Shouldnt have happened" << endl;
@@ -36,10 +36,35 @@ public:
 class RR_scheduler{
 	// Variables
 public:
-	
+	int time_slice = 1;			// Time Slice for RR
+	int current_time;					// Global time of scheduler
+	queue<Process> proc_q;
+
 	// Functions
 	void run(){
-		
+		int time_to_run = time_slice;
+		if (!proc_q.empty()){
+			Process proc_to_run = proc_q.front();
+			if (proc_to_run.time_left > time_to_run){
+				proc_to_run.run(time_to_run);
+			}else{
+				time_to_run = proc_to_run.time_left;
+				proc_to_run.run(time_to_run);
+			}
+			int time_left = proc_to_run.run(time_to_run);
+			if (time_left == 0){
+				proc_to_run.kill(current_time+time_to_run);
+				proc_q.pop();
+			}else{
+				cout << "ERROR: Shouldnt have happened" << endl;
+			}
+		}
+
+		current_time += time_to_run;
+	}
+
+	void add_process(Process &new_proc){
+		proc_q.push(new_proc);
 	}
 };
 
