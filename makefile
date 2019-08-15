@@ -6,22 +6,24 @@ ODIR = ./build
 EDIR = ./bin
 SDIR = ./src
 
-# _DEPS = imgOp.h
-# DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
+_DEPS = process.h scheduler.h
+DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = readconfig.o
+_OBJ = simulator.o scheduler.o process.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
-all: $(EDIR)/gl_sim 
+# all: $(EDIR)/process $(EDIR)/scheduler $(EDIR)/simulator
 
-$(ODIR)/%.o: $(SDIR)/%.cpp
+$(ODIR)/%.o: $(SDIR)/%.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-$(ODIR)/gl_sim.o: $(SDIR)/gl_sim.cpp
-	$(CC) -c -o $@ $< $(CFLAGS)
+$(EDIR)/simulator: $(OBJ)
+	$(CC) -o $@ $^ $(CFLAGS)
 
-$(EDIR)/gl_sim: $(ODIR)/gl_sim.o
-	$(CC) -o $@ $^ $(CFLAGS) -lGL -lGLU -lglut
+# $(ODIR)/gl_sim.o: $(SDIR)/gl_sim.cpp
+# 	$(CC) -c -o $@ $< $(CFLAGS)
+
+
 
 .PHONY: clean
 

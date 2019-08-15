@@ -9,9 +9,14 @@ public:
 	int start_time;
 	int proc_length;
 	int status;
-	
+private:
+	bool alive;
 	// Functions
+	void kill(){
+
+	}
+
 	void run(){
 		
 	}
-}
+};
