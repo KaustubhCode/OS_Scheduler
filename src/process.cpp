@@ -8,15 +8,15 @@ public:
 	int pid;
 	int start_time;
 	int proc_length;
+	int time_left;
 	int status;
-private:
-	bool alive;
+	
 	// Functions
 	void kill(){
 
 	}
-
-	void run(){
-		
+	//Run for t seconds
+	void run(int t){
+		time_left = time_left-t;
 	}
 };
