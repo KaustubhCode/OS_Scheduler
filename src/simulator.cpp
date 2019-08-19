@@ -16,59 +16,60 @@ void print_table(vector<Process> p)
     int n = p.size();
 
     puts("+-----+------------+--------------+------------------+--------------+----------------+");
-    puts("| PID | Burst Time | Waiting Time | Turn-Around Time | Arrival Time | Completion Time |");
+    puts("| PID | Burst Time | Response Time | Turn-Around Time | Arrival Time | Completion Time |");
     puts("+-----+------------+--------------+------------------+--------------+----------------+");
 
     for(i=0; i<n; i++) {
     	Process proc = p.at(i);
         printf("| %2d  |     %0.2f     |      %0.2f      |        %0.2f       |      %0.2f      |       %0.2f       |\n"
-               , proc.pid, proc.proc_length, proc.wait_time, proc.turn_around_time, proc.arrival_time, proc.end_time);
+               , proc.pid, proc.proc_length, proc.response_time, proc.turn_around_time, proc.arrival_time, proc.end_time);
         puts("+-----+------------+--------------+-----------------+");
     }
 
 }
 
 
-// void print_gantt_chart(vector<Process> p, vector<time_obj> time)
-// {
-//     int i, j;
-//     int n = p.size();
-//     // print top bar
-//     printf(" ");
-//     for(i=0; i<n; i++) {
-//         for(j=0; j<p[i].burst_time; j++) printf("--");
-//         printf(" ");
-//     }
-//     printf("\n|");
+void print_gantt_chart(vector<Process> p, vector<time_obj> time)
+{
+    int i, j;
+    int n = p.size();
+    // print top bar
+    printf(" ");
+    for(i=0; i<n; i++) {
+        for(j=0; j<p.at(i).proc_length; j++) printf("--");
+        printf(" ");
+    }
+    printf("\n|");
 
-//     // printing process id in the middle
-//     for(i=0; i<n; i++) {
-//         for(j=0; j<p[i].burst_time - 1; j++) printf(" ");
-//         printf("P%d", p[i].pid);
-//         for(j=0; j<p[i].burst_time - 1; j++) printf(" ");
-//         printf("|");
-//     }
-//     printf("\n ");
-//     // printing bottom bar
-//     for(i=0; i<n; i++) {
-//         for(j=0; j<p[i].burst_time; j++) printf("--");
-//         printf(" ");
-//     }
-//     printf("\n");
+    // printing process id in the middle
+    for(i=0; i<n; i++) {
+        for(j=0; j< p.at(i).proc_length - 1; j++) printf(" ");
+        printf("P%d", p[i].pid);
+        for(j=0; j< p.at(i).proc_length - 1; j++) printf(" ");
+        printf("|");
+    }
+    printf("\n ");
+    // printing bottom bar
+    for(i=0; i<n; i++) {
+        for(j=0; j< p.at(i).proc_length; j++) printf("--");
+        printf(" ");
+    }
+    printf("\n");
 
-//     // printing the time line
-//     printf("0");
-//     for(i=0; i<n; i++) {
-//         for(j=0; j<p[i].burst_time; j++) printf("  ");
-//         if(p[i].turnaround_time > 9) printf("\b"); // backspace : remove 1 space
-//         printf("%d", p[i].turnaround_time);
+    // printing the time line
+    printf("0");
+    for(i=0; i<n; i++) {
+        for(j=0; j<p.at(i).proc_length; j++) printf("  ");
+        if(p.at(i).turn_around_time > 9) printf("\b"); // backspace : remove 1 space
+        printf("%0.2f", p.at(i).turn_around_time);
 
-//     }
-//     printf("\n");
-// }
+    }
+    printf("\n");
+}
 
 
 int main(){
+
 	cout << "TEST" << endl;
 	srand(time(NULL));
 	FIFO_scheduler fifo;
@@ -115,7 +116,7 @@ int main(){
 
 	vector<time_obj> fifo_t = fifo.run();
 	print_table(fifo.ret_list);
-	// print_gantt_chart(fifo.ret_list, fifo_t);
+	print_gantt_chart(fifo.ret_list, fifo_t);
 
 
 	// vector<time_obj> rr_t = rr.run();
