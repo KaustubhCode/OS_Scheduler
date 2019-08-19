@@ -35,9 +35,9 @@ public:
 		status = 3;
 	}
 	//Run for t seconds
-	int run(double t){
+	double run(double c_t, double t){
 		if (status == 0){
-			start_time = t;
+			start_time = c_t;
 			status = 1;
 		}
 		time_left = time_left-t;
