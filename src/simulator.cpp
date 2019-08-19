@@ -21,7 +21,7 @@ void print_table(vector<Process> p)
 
     for(i=0; i<n; i++) {
     	Process proc = p.at(i);
-        printf("| %2d  |     %0.2f     |      %0.2f      |        %0.2f       |      %0.2f      |       %0.2f       |\n"
+        printf("| %2d  |    %2.2f    |     %2.2f     |       %2.2f      |     %2.2f     |      %2.2f      |\n"
                , proc.pid, proc.proc_length, proc.response_time, proc.turn_around_time, proc.arrival_time, proc.end_time);
         puts("+-----+------------+--------------+-----------------+");
     }
@@ -87,12 +87,15 @@ int main(){
 
 	int cap = 0.1;
 	vector<double> proc_times;
+	double sum = 0;
 	for (int i = 0; i < n-1; i++){
 		double r = (((double) rand() / (RAND_MAX)) * (1-cap)) + cap;
 		double inter_time = - (log(r))/lambda;
-		proc_times.push_back(inter_time);
-		printf("%0.2f ", inter_time); 
+		sum = sum + inter_time;
+		proc_times.push_back(sum);
+		printf("%0.2f ", inter_time);
 	}
+	printf("\n");
 
 	cout << "Mean Time (Burst time): ";
 	cin >> lambda;
