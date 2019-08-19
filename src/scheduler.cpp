@@ -99,47 +99,85 @@ public:
 
 class RR_scheduler{
 	// Variables
-// public:
-// 	double time_slice = 1;			// Time Slice for RR
-// 	double current_time;					// Global time of scheduler
-// 	queue<Process> proc_q;
-// 	vector<Process> spawn_list;		// List of processes to be queued
-// 	vector<Process> ret_list;			// List of completed processes
-// 	vector<time_obj> timeline;
+public:
+	double time_slice = 1;
+	double current_time;					// Global time of scheduler
+	queue<Process> proc_q;				// List of processes spawned and queued in Scheduler
+	list<Process> spawn_list;		// List of processes to be queued
+	vector<Process> ret_list;			// List of completed processes
+	vector<time_obj> timeline;
+	// Functions
 
-// 	// Functions
-// 	void run_block(){
-// 		double time_to_run = time_slice;
-// 		if (!proc_q.empty()){
-// 			Process proc_to_run = proc_q.front();
-// 			if (proc_to_run.time_left > time_to_run){
-// 				proc_to_run.run(time_to_run);
-// 			}else{
-// 				time_to_run = proc_to_run.time_left;
-// 				proc_to_run.run(time_to_run);
-// 			}
-// 			double time_left = proc_to_run.run(time_to_run);
-// 			if (time_left <= 0){
-// 				proc_to_run.kill(current_time+time_to_run);
-// 				proc_q.pop();
-// 			}else{
-// 				cout << "ERROR: Shouldnt have happened" << endl;
-// 			}
-// 		}
+	void run_block(){
+		double time_to_run = time_slice;		// time to add to global time
+		if ( !proc_q.empty() && spawn_list.empty() ){
+			Process proc_to_run = proc_q.front();					// Process to be run
+			if (time_to_run > proc_to_run.time_left){
+				time_to_run = proc_to_run.time_left;
+			}
+			// Running Process
+			double time_left = proc_to_run.run(current_time, time_to_run);
+			timeline.push_back(time_obj(proc_to_run.pid, current_time, current_time+time_to_run));
+			// Killing Process if needed
+			if (time_left <= 0){
+				proc_to_run.kill(current_time+time_to_run);
+				ret_list.push_back(proc_to_run);
+				proc_q.pop();
+			}else{
+				// Again queue back process
+				proc_q.pop();
+				proc_q.push(proc_to_run);
+			}
+		}else if ( proc_q.empty() && !spawn_list.empty() ){
+			Process proc_to_spawn = spawn_list.front();		// Process to be spawned
+			add_process(proc_to_spawn);
+			spawn_list.pop_front();
+			time_to_run = proc_to_spawn.arrival_time - current_time;
+		}else if ( !proc_q.empty() && !spawn_list.empty() ){
+			Process proc_to_run = proc_q.front();					// Process to be run
+			if (time_to_run > proc_to_run.time_left){
+				time_to_run = proc_to_run.time_left;
+			}
+			// If process is to be spawned first
+			while(current_time+time_to_run > spawn_list.front().arrival_time){
+				Process proc_to_spawn = spawn_list.front();		// Process to be spawned
+				add_process(proc_to_spawn);
+				spawn_list.pop_front();
+			}
+			// Running Process
+			double time_left = proc_to_run.run(current_time, time_to_run);
+			timeline.push_back(time_obj(proc_to_run.pid, current_time, current_time+time_to_run));
+			// Killing Process if needed
+			if (time_left <= 0){
+				proc_to_run.kill(current_time+time_to_run);
+				ret_list.push_back(proc_to_run);
+				proc_q.pop();
+			}else{
+				// Again queue back process
+				proc_q.pop();
+				proc_q.push(proc_to_run);
+			}
+		}else{
+			// Scheduler should exit
+		}
 
-// 		current_time += time_to_run;
-// 	}
+		current_time += time_to_run;
+	}
 
-// 	vector<Process> run(){
-// 		while(!spawn_list.empty() && !proc_q.empty()){
-// 			run_block();
-// 		}
-// 		return ret_list;
-// 	}
+	vector<time_obj> run(){
+		while(!spawn_list.empty() || !proc_q.empty()){
+			run_block();
+		}
+		return timeline;
+	}
 
-// 	void add_process(Process &new_proc){
-// 		proc_q.push(new_proc);
-// 	}
+	void add_process(Process new_proc){
+		proc_q.push(new_proc);
+	}
+
+	void spawn_process(list<Process> proc_list){
+		spawn_list = proc_list;
+	}
 };
 
 class SJF_scheduler{
