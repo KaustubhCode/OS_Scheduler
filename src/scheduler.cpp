@@ -317,15 +317,11 @@ public:
 			// Running Process
 			double time_left = proc_to_run.run(current_time, time_to_run);
 			timeline.push_back(time_obj(proc_to_run.pid, current_time, current_time+time_to_run));
-			// Killing Process if needed
-			if (time_left <= 0){
-				proc_to_run.kill(current_time+time_to_run);
-				ret_list.push_back(proc_to_run);
-				proc_q.pop();
-			}else{
-				// Shouldnt come
-				cout << "ERROR: SRTF" << endl;
-			}
+			// Killing Process
+			proc_to_run.kill(current_time+time_to_run);
+			ret_list.push_back(proc_to_run);
+			proc_q.pop();
+
 		}else if ( proc_q.empty() && !spawn_list.empty() ){
 			Process proc_to_spawn = spawn_list.front();		// Process to be spawned
 			add_process(proc_to_spawn);
@@ -334,6 +330,8 @@ public:
 		}else if ( !proc_q.empty() && !spawn_list.empty() ){
 			Process proc_to_run = proc_q.top();					// Process to be run
 			time_to_run = proc_to_run.time_left;
+			proc_q.pop();
+
 			// If process is to be spawned first
 			if (current_time+time_to_run > spawn_list.front().arrival_time){
 				Process proc_to_spawn = spawn_list.front();		// Process to be spawned
@@ -348,10 +346,8 @@ public:
 			if (time_left <= 0){
 				proc_to_run.kill(current_time+time_to_run);
 				ret_list.push_back(proc_to_run);
-				proc_q.pop();
 			}else{
 				// Again queue back process (acc to time_left)
-				proc_q.pop();
 				proc_q.push(proc_to_run);
 			}
 		}else{

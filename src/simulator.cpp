@@ -59,7 +59,7 @@ void print_gantt_chart(vector<Process> p, vector<time_obj> time)
     printf("\n");
 
     // printing the time line
-    printf("0");
+    printf("0 ");
     for(i=0; i<n; i++) {
         for(j=0; j<time.at(i).e_t-time.at(i).s_t; j++) printf("  ");
 
