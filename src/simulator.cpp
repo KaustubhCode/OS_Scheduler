@@ -61,14 +61,14 @@ void print_gantt_chart(vector<Process> p, vector<time_obj> time)
     printf("\n");
 
     // printing the time line
-    printf("0");
+    printf("0 ");
     for(i=0; i<n; i++) {
         for(j=0; j<time.at(i).e_t-time.at(i).s_t; j++) printf("  ");
 
         // if(time.at(i).turn_around_time > 9) printf("\b"); // backspace : remove 1 space
         if (time.at(i).e_t-time.at(i).s_t > 1) printf("\b\b%5.2f",time.at(i).e_t);
     	else{
-    		printf("%3.1f",time.at(i).e_t);
+    		printf("\b%4.1f",time.at(i).e_t);
     	}
         // printf("\b%0.2f", time.at(i).e_t);
 
