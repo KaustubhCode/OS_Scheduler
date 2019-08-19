@@ -13,6 +13,7 @@ public:
 	double proc_length;			// Total CPU time needed to complete the job
 	double time_left;			// CPU time remaining to be processed
 	int status;					// 0: created, 1: after getting scheduled 1st time, 3:completed/killed
+	int qu;
 	// For reporting
 	double turn_around_time;
 	double wait_time;
