@@ -82,7 +82,7 @@ public:
 	}
 
 	vector<time_obj> run(){
-		while(!spawn_list.empty() && !proc_q.empty()){
+		while(!spawn_list.empty() || !proc_q.empty()){
 			run_block();
 		}
 		return timeline;
