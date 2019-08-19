@@ -2,6 +2,7 @@
 #define PROCESS_H
 
 #include <iostream>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -20,6 +21,7 @@ public:
 	int wait_time;
 	int response_time;
 
+	Process(int at);
 	// Functions
 	void kill(int et);
 	
