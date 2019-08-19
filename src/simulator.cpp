@@ -32,26 +32,26 @@ void print_table(vector<Process> p)
 void print_gantt_chart(vector<Process> p, vector<time_obj> time)
 {
     int i, j;
-    int n = p.size();
+    int n = time.size();
     // print top bar
     printf(" ");
     for(i=0; i<n; i++) {
-        for(j=0; j<p.at(i).proc_length; j++) printf("--");
+        for(j=0; j<time.at(i).e_t-time.at(i).s_t; j++) printf("--");
         printf(" ");
     }
     printf("\n|");
 
     // printing process id in the middle
     for(i=0; i<n; i++) {
-        for(j=0; j< p.at(i).proc_length - 1; j++) printf(" ");
-        printf("P%d", p[i].pid);
-        for(j=0; j< p.at(i).proc_length - 1; j++) printf(" ");
+        for(j=0; j< time.at(i).e_t-time.at(i).s_t - 1; j++) printf(" ");
+        printf("P%d", time.at(i).pid);
+        for(j=0; j< time.at(i).e_t-time.at(i).s_t - 1; j++) printf(" ");
         printf("|");
     }
     printf("\n ");
     // printing bottom bar
     for(i=0; i<n; i++) {
-        for(j=0; j< p.at(i).proc_length; j++) printf("--");
+        for(j=0; j< time.at(i).e_t-time.at(i).s_t; j++) printf("--");
         printf(" ");
     }
     printf("\n");
@@ -59,9 +59,9 @@ void print_gantt_chart(vector<Process> p, vector<time_obj> time)
     // printing the time line
     printf("0");
     for(i=0; i<n; i++) {
-        for(j=0; j<p.at(i).proc_length; j++) printf("  ");
-        if(p.at(i).turn_around_time > 9) printf("\b"); // backspace : remove 1 space
-        printf("%0.2f", p.at(i).turn_around_time);
+        for(j=0; j<time.at(i).e_t-time.at(i).s_t; j++) printf("  ");
+        // if(time.at(i).turn_around_time > 9) printf("\b"); // backspace : remove 1 space
+        printf("%0.2f", time.at(i).e_t);
 
     }
     printf("\n");
@@ -114,14 +114,17 @@ int main(){
 	}
 
 	fifo.spawn_process(proc_list);
-	// rr.spawn_process(proc_list);
+	rr.spawn_process(proc_list);
 	// sjf.spawn_process(proc_list);
 
-	vector<time_obj> fifo_t = fifo.run();
-	print_table(fifo.ret_list);
-	print_gantt_chart(fifo.ret_list, fifo_t);
-	cout << fifo.spawn_list.size() << " " << fifo.proc_q.size() << endl;
+	// vector<time_obj> fifo_t = fifo.run();
+	// print_table(fifo.ret_list);
+	// print_gantt_chart(fifo.ret_list, fifo_t);
+	// cout << fifo.spawn_list.size() << " " << fifo.proc_q.size() << endl;
 
+	vector<time_obj> rr_t = rr.run();
+	print_table(rr.ret_list);
+	print_gantt_chart(rr.ret_list, rr_t);
 
 	// vector<time_obj> rr_t = rr.run();
 	// vector<time_obj> sjf_t = sjf.run();
