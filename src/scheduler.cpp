@@ -354,7 +354,7 @@ public:
 class MLFQ_scheduler{
 	// Variables
 public:
-	int time_slice = 1;
+	vector<int> time_slice_list;
 	int queue_count = 3;
 	double current_time;					// Global time of scheduler
 	vector<queue<Process> > proc_q;				// List of processes spawned and queued in Scheduler
@@ -364,9 +364,14 @@ public:
 	
 	// Functions
 	void run_block(){
-		double time_to_run = time_slice;		// time to add to global time
+		double time_to_run = 1;
 		int select_q = 0;
-		while ( proc_q[select_q].empty() ){	select_q++; }
+		while ( proc_q[select_q].empty() ){	
+			select_q++;
+		}
+		if (select_q < queue_count){
+			time_to_run = time_slice_list[select_q];
+		}
 		if ( select_q < queue_count && spawn_list.empty() ){
 			Process proc_to_run = proc_q[select_q].front();					// Process to be run
 			if (time_to_run > proc_to_run.time_left){
@@ -428,7 +433,8 @@ public:
 		current_time += time_to_run;
 	}
 
-	void set_queue_count( int n ){
+	void set_queue_count( int n, vector<int> slice_list){
+		time_slice_list = slice_list;
 		queue<Process> q;
 		queue_count = n;
 		for (int i=0; i<n; i++){
