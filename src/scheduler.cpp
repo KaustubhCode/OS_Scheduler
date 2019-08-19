@@ -15,18 +15,24 @@ struct time_obj
 	}
 };
 
-class sjf_comp 
-{ 
+// class mlfq_comp { 
+// public: 
+// 	int operator() (const Process& p1, const Process& p2){
+// 		if (p1.qu > p2.qu){
+// 			return 1;
+// 		}else if (p1.qu == p2.qu &)
+// 		return p1.time_left > p2.time_left; 
+// 	} 
+// };
+
+class sjf_comp { 
 public: 
     int operator() (const Process& p1, const Process& p2) 
     { 
         return p1.time_left > p2.time_left; 
     } 
-}; 
-// bool sjf_comp(Process &p1, Process &p2){
-// 	return p1.time_left > p2.time_left;
-// }
-	
+};
+
 bool cmp(Process p1, Process p2){
 	return (p1.time_left < p2.time_left);
 }
@@ -348,6 +354,11 @@ public:
 class MLFQ_scheduler{
 	// Variables
 public:
+	double current_time;					// Global time of scheduler
+	priority_queue<Process, vector<Process>, sjf_comp> proc_q;				// List of processes spawned and queued in Scheduler
+	list<Process> spawn_list;		// List of processes to be queued
+	vector<Process> ret_list;			// List of completed processes
+	vector<time_obj> timeline;
 	
 	// Functions
 	void run(){
