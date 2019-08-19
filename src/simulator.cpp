@@ -1,7 +1,10 @@
-#include <iostream>
 #include <bits/stdc++.h>
-#include "process.h"
-#include "scheduler.h"
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <vector>
+#include "process.cpp"
+#include "scheduler.cpp"
 
 
 using namespace std;
@@ -63,9 +66,27 @@ using namespace std;
 
 int main(){
 	cout << "TEST" << endl;
+	srand(time(NULL));
 	FIFO_scheduler fifo;
 	RR_scheduler rr;
 	SJF_scheduler sjf;
-	
+
+	int n; double lambda;
+	cout << "Number of Processes: ";
+	cin >> n;
+	cout << "Mean Time: ";
+	cin >> lambda;
+	lambda = 1.0/ (double) lambda;
+
+	int cap = 0.1;
+	vector<double> proc_times;
+	for (int i = 0; i < n-1; i++){
+		double r = (((double) rand() / (RAND_MAX)) * (1-cap)) + cap;
+		double inter_time = - (log(r))/lambda;
+		proc_times.push_back(inter_time);
+		printf("%0.2f ", inter_time); 
+	}
+
+
 
 }

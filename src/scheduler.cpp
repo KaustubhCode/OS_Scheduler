@@ -1,6 +1,6 @@
 #include <iostream>
 #include <bits/stdc++.h>
-#include "process.h"
+// #include "process.cpp"
 using namespace std;
 
 
@@ -98,7 +98,7 @@ public:
 		current_time += time_to_run;
 	}
 
-	void add_process(Process[] proc_list){
+	void add_process(Process proc_list[]){
 		if (sizeof(proc_list)==0){
 			printf("No processes\n");
 			return;
