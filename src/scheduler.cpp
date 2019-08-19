@@ -11,19 +11,28 @@ bool cmp(Process p1, Process p2){
 class FIFO_scheduler{
 	// Variables
 public:
-	int current_time;					// Global time of scheduler
-	queue<Process> proc_q;
-
+	double current_time;					// Global time of scheduler
+	queue<Process> proc_q;				// List of processes spawned and queued in Scheduler
+	vector<Process> spawn_list;		// List of processes to be queued
+	vector<Process> ret_list;			// List of completed processes
 	// Functions
-	void run(){
-		int time_to_run = 1;		// time to add to global time
+
+	void run_block(){
+		double time_to_run = 1;		// time to add to global time
 
 		if (!proc_q.empty()){
 			Process proc_to_run = proc_q.front();
+			Process proc_to_spawn = spawn_list.front();
 			time_to_run = proc_to_run.time_left;
-			int time_left = proc_to_run.run(time_to_run);
-			if (time_left == 0){
+			if (time_to_run >= proc_to_spawn.arrival_time - current_time){
+				add_process(proc_to_spawn);
+				spawn_list.pop_front();
+				time_to_run = proc_to_spawn.arrival_time - current_time;
+			}
+			double time_left = proc_to_run.run(time_to_run);
+			if (time_left <= 0){
 				proc_to_run.kill(current_time+time_to_run);
+				ret_list.push_back(proc_to_run);
 				proc_q.pop();
 			}else{
 				cout << "ERROR: Shouldnt have happened" << endl;
@@ -33,21 +42,32 @@ public:
 		current_time += time_to_run;
 	}
 
+	vector<Process> run(){
+		while(!spawn_list.empty() && !proc_q.empty()){
+			run_block();
+		}
+		return ret_list;
+	}
+
 	void add_process(Process &new_proc){
 		proc_q.push(new_proc);
+	}
+
+	void spawn_process(vector<Process> proc_list){
+		spawn_list = proc_list;
 	}
 };
 
 class RR_scheduler{
 	// Variables
 public:
-	int time_slice = 1;			// Time Slice for RR
-	int current_time;					// Global time of scheduler
+	double time_slice = 1;			// Time Slice for RR
+	double current_time;					// Global time of scheduler
 	queue<Process> proc_q;
 
 	// Functions
 	void run(){
-		int time_to_run = time_slice;
+		double time_to_run = time_slice;
 		if (!proc_q.empty()){
 			Process proc_to_run = proc_q.front();
 			if (proc_to_run.time_left > time_to_run){
@@ -56,8 +76,8 @@ public:
 				time_to_run = proc_to_run.time_left;
 				proc_to_run.run(time_to_run);
 			}
-			int time_left = proc_to_run.run(time_to_run);
-			if (time_left == 0){
+			double time_left = proc_to_run.run(time_to_run);
+			if (time_left <= 0){
 				proc_to_run.kill(current_time+time_to_run);
 				proc_q.pop();
 			}else{
@@ -76,18 +96,18 @@ public:
 class SJF_scheduler{
 	// Variables
 public:
-	int current_time;					// Global time of scheduler
+	double current_time;					// Global time of scheduler
 	queue<Process> proc_q; 
 	
 	// Functions
 	void run(){
-		int time_to_run = 1;		// time to add to global time
+		double time_to_run = 1;		// time to add to global time
 
 		if (!proc_q.empty()){
 			Process proc_to_run = proc_q.front();
 			time_to_run = proc_to_run.time_left;
-			int time_left = proc_to_run.run(time_to_run);
-			if (time_left == 0){
+			double time_left = proc_to_run.run(time_to_run);
+			if (time_left <= 0){
 				proc_to_run.kill(current_time+time_to_run);
 				proc_q.pop();
 			}else{
@@ -103,10 +123,10 @@ public:
 			printf("No processes\n");
 			return;
 		}
-		int n = sizeof(proc_list)/sizeof(proc_list[0]);
+		double n = sizeof(proc_list)/sizeof(proc_list[0]);
 		sort(proc_list,proc_list+n, cmp);
 
-		for (int i = 0; i < n; i++){
+		for (double i = 0; i < n; i++){
 			proc_q.push(proc_list[i]);
 		}
 	}
