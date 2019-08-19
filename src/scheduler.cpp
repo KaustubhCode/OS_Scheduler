@@ -1,14 +1,14 @@
 #include <iostream>
 #include <bits/stdc++.h>
-#include "process.cpp"
+// #include "process.cpp"
 using namespace std;
 
 struct time_obj
 {
 	int pid;
-	int s_t;
-	int e_t;
-	time_obj(int id, int s, int e){
+	double s_t;
+	double e_t;
+	time_obj(int id, double s, double e){
 		pid = id;
 		s_t = s;
 		e_t = e;

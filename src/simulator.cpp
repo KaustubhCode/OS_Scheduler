@@ -3,15 +3,18 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
+#include <list>
 #include "process.cpp"
 #include "scheduler.cpp"
 
 
 using namespace std;
 
-// void print_table(Process p[], int n)
+// void print_table(vector<Process> p)
 // {
 //     int i;
+//     int n = p.size();
+
 
 //     puts("+-----+------------+--------------+------------------+--------------+----------------+");
 //     puts("| PID | Burst Time | Waiting Time | Turn-Around Time | Arrival Time | Completion Time |");
@@ -19,16 +22,17 @@ using namespace std;
 
 //     for(i=0; i<n; i++) {
 //         printf("| %2d  |     %2d     |      %2d      |        %2d       |      %2d      |       %2d       |\n"
-//                , p[i].pid, p[i].burst_time, p[i].waiting_time, p[i].turnaround_time, p[i].arrivl_time, p[i].completion_time);
+//                , p.at(i).pid, p.at(i).burst_time, p.at(i).waiting_time, p.at(i).turnaround_time, p.at(i).arrivl_time, p.at(i).completion_time);
 //         puts("+-----+------------+--------------+-----------------+");
 //     }
 
 // }
 
 
-// void print_gantt_chart(Process p[], int n)
+// void print_gantt_chart(vector<Process> p, vector<time_obj> time)
 // {
 //     int i, j;
+//     int n = p.size();
 //     // print top bar
 //     printf(" ");
 //     for(i=0; i<n; i++) {
@@ -70,11 +74,13 @@ int main(){
 	FIFO_scheduler fifo;
 	RR_scheduler rr;
 	SJF_scheduler sjf;
+	// SRTF_scheduler sjf;
+	// MLFQ_scheduler sjf;
 
 	int n; double lambda;
 	cout << "Number of Processes: ";
 	cin >> n;
-	cout << "Mean Time: ";
+	cout << "Mean Time (Inter-arrival time): ";
 	cin >> lambda;
 	lambda = 1.0/ (double) lambda;
 
@@ -87,6 +93,31 @@ int main(){
 		printf("%0.2f ", inter_time); 
 	}
 
+	cout << "Mean Time (Burst time): ";
+	cin >> lambda;
+	lambda = 1.0/ (double) lambda;
+	list<Process> proc_list;
+
+	double r = (((double) rand() / (RAND_MAX)) * (1-cap)) + cap;
+	double burst_time = - (log(r))/lambda;
+	Process new_proc(1,0,burst_time);
+	proc_list.push_back(new_proc);
+	for (int i = 0; i < n-1; i++){
+		double r = (((double) rand() / (RAND_MAX)) * (1-cap)) + cap;
+		double burst_time = - (log(r))/lambda;
+		Process new_proc(i+2,proc_times.at(i),burst_time);
+		proc_list.push_back(new_proc);
+	}
+
+	fifo.spawn_process(proc_list);
+	// rr.spawn_process(proc_list);
+	// sjf.spawn_process(proc_list);
+
+	vector<time_obj> fifo_t = fifo.run();
+	// print_gantt_chart(fifo.ret_list, fifo_t);
 
 
+	// vector<time_obj> rr_t = rr.run();
+	// vector<time_obj> sjf_t = sjf.run();
 }
+
