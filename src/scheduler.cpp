@@ -58,10 +58,10 @@ public:
 			Process proc_to_run = proc_q.front();					// Process to be run
 			time_to_run = proc_to_run.time_left;
 			// If process is to be spawned first
-			if (time_to_run >= proc_to_spawn.arrival_time - current_time){
+			while(!spawn_list.empty() && current_time+time_to_run > spawn_list.front().arrival_time){
+				Process proc_to_spawn = spawn_list.front();		// Process to be spawned
 				add_process(proc_to_spawn);
 				spawn_list.pop_front();
-				time_to_run = proc_to_spawn.arrival_time - current_time;
 			}
 			// Running Process
 			double time_left = proc_to_run.run(current_time, time_to_run);
@@ -72,7 +72,7 @@ public:
 				ret_list.push_back(proc_to_run);
 				proc_q.pop();
 			}else{
-				cout << "ERROR: Shouldnt have happened" << endl;
+				cout << "ERROR: Queued" << endl;
 			}
 		}else{
 			// Scheduler should exit
@@ -139,7 +139,7 @@ public:
 				time_to_run = proc_to_run.time_left;
 			}
 			// If process is to be spawned first
-			while(current_time+time_to_run > spawn_list.front().arrival_time){
+			while(!spawn_list.empty() && current_time+time_to_run > spawn_list.front().arrival_time){
 				Process proc_to_spawn = spawn_list.front();		// Process to be spawned
 				add_process(proc_to_spawn);
 				spawn_list.pop_front();
