@@ -19,12 +19,15 @@ public:
 	double wait_time;
 	double response_time;
 
+	double time_allotment_left;
+
 	Process(int id, double at, double burst){
 		arrival_time = at;
 		pid = id;
 		proc_length = burst;
 		time_left = burst; 
 		status = 0;
+		time_allotment_left = INT_MAX;
 	}
 
 	// Functions
