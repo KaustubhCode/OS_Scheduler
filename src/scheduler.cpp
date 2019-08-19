@@ -32,16 +32,30 @@ public:
 
 	void run_block(){
 		double time_to_run = 1;		// time to add to global time
-		Process proc_to_run;
-		Process proc_to_spawn;
+		// Process proc_to_run;
+		// Process proc_to_spawn;
 		if ( !proc_q.empty() && spawn_list.empty() ){
-			proc_to_run = proc_q.front();					// Process to be run
+			Process proc_to_run = proc_q.front();					// Process to be run
 			time_to_run = proc_to_run.time_left;
+			// Running Process
+			double time_left = proc_to_run.run(time_to_run);
+			timeline.push_back(time_obj(proc_to_run.pid, current_time, current_time+time_to_run));
+			// Killing Process if needed
+			if (time_left <= 0){
+				proc_to_run.kill(current_time+time_to_run);
+				ret_list.push_back(proc_to_run);
+				proc_q.pop();
+			}else{
+				cout << "ERROR: Shouldnt have happened" << endl;
+			}
 		}else if ( proc_q.empty() && !spawn_list.empty() ){
-			proc_to_spawn = spawn_list.front();		// Process to be spawned
+			Process proc_to_spawn = spawn_list.front();		// Process to be spawned
+			add_process(proc_to_spawn);
+			spawn_list.pop_front();
+			time_to_run = proc_to_spawn.arrival_time - current_time;
 		}else if ( !proc_q.empty() && !spawn_list.empty() ){
-			proc_to_spawn = spawn_list.front();		// Process to be spawned
-			proc_to_run = proc_q.front();					// Process to be run
+			Process proc_to_spawn = spawn_list.front();		// Process to be spawned
+			Process proc_to_run = proc_q.front();					// Process to be run
 			time_to_run = proc_to_run.time_left;
 			// If process is to be spawned first
 			if (time_to_run >= proc_to_spawn.arrival_time - current_time){
@@ -49,26 +63,19 @@ public:
 				spawn_list.pop_front();
 				time_to_run = proc_to_spawn.arrival_time - current_time;
 			}
+			// Running Process
+			double time_left = proc_to_run.run(time_to_run);
+			timeline.push_back(time_obj(proc_to_run.pid, current_time, current_time+time_to_run));
+			// Killing Process if needed
+			if (time_left <= 0){
+				proc_to_run.kill(current_time+time_to_run);
+				ret_list.push_back(proc_to_run);
+				proc_q.pop();
+			}else{
+				cout << "ERROR: Shouldnt have happened" << endl;
+			}
 		}else{
-
-		}
-
-		// If process is to be spawned first
-		if (time_to_run >= proc_to_spawn.arrival_time - current_time){
-			add_process(proc_to_spawn);
-			spawn_list.pop_front();
-			time_to_run = proc_to_spawn.arrival_time - current_time;
-		}
-		// Running Process
-		double time_left = proc_to_run.run(time_to_run);
-		timeline.push_back(time_obj(proc_to_run.pid, current_time, current_time+time_to_run));
-		// Killing Process if needed
-		if (time_left <= 0){
-			proc_to_run.kill(current_time+time_to_run);
-			ret_list.push_back(proc_to_run);
-			proc_q.pop();
-		}else{
-			cout << "ERROR: Shouldnt have happened" << endl;
+			// Scheduler should exit
 		}
 
 		current_time += time_to_run;
