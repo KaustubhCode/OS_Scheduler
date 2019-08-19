@@ -354,14 +354,100 @@ public:
 class MLFQ_scheduler{
 	// Variables
 public:
+	int time_slice = 1;
+	int queue_count = 3;
 	double current_time;					// Global time of scheduler
-	priority_queue<Process, vector<Process>, sjf_comp> proc_q;				// List of processes spawned and queued in Scheduler
+	vector<queue<Process> > proc_q;				// List of processes spawned and queued in Scheduler
 	list<Process> spawn_list;		// List of processes to be queued
 	vector<Process> ret_list;			// List of completed processes
 	vector<time_obj> timeline;
 	
 	// Functions
-	void run(){
-		
+	void run_block(){
+		double time_to_run = time_slice;		// time to add to global time
+		int select_q = 0;
+		while ( proc_q[select_q].empty() ){	select_q++; }
+		if ( select_q < queue_count && spawn_list.empty() ){
+			Process proc_to_run = proc_q[select_q].front();					// Process to be run
+			if (time_to_run > proc_to_run.time_left){
+				time_to_run = proc_to_run.time_left;
+			}
+			// Running Process
+			double time_left = proc_to_run.run(current_time, time_to_run);
+			timeline.push_back(time_obj(proc_to_run.pid, current_time, current_time+time_to_run));
+			// Killing Process if needed
+			if (time_left <= 0){
+				proc_to_run.kill(current_time+time_to_run);
+				ret_list.push_back(proc_to_run);
+				proc_q[select_q].pop();
+			}else{
+				// Push Back
+				proc_q[select_q].pop();
+				if (select_q != queue_count-1){
+					select_q++;
+				}
+				proc_q[select_q].push(proc_to_run);
+			}
+		}else if ( select_q >= queue_count && !spawn_list.empty() ){
+			Process proc_to_spawn = spawn_list.front();		// Process to be spawned
+			add_process(proc_to_spawn);
+			spawn_list.pop_front();
+			time_to_run = proc_to_spawn.arrival_time - current_time;
+		}else if ( select_q < queue_count && !spawn_list.empty() ){
+			Process proc_to_run = proc_q[select_q].front();					// Process to be run
+			if (time_to_run > proc_to_run.time_left){
+				time_to_run = proc_to_run.time_left;
+			}
+			// If process is to be spawned first
+			if (current_time+time_to_run > spawn_list.front().arrival_time){
+				Process proc_to_spawn = spawn_list.front();		// Process to be spawned
+				add_process(proc_to_spawn);
+				time_to_run = proc_to_spawn.arrival_time - current_time;
+				spawn_list.pop_front();
+			}
+			// Running Process
+			double time_left = proc_to_run.run(current_time, time_to_run);
+			timeline.push_back(time_obj(proc_to_run.pid, current_time, current_time+time_to_run));
+			// Killing Process if needed
+			if (time_left <= 0){
+				proc_to_run.kill(current_time+time_to_run);
+				ret_list.push_back(proc_to_run);
+				proc_q[select_q].pop();
+			}else{
+				// Push Back
+				proc_q[select_q].pop();
+				if (select_q != queue_count-1){
+					select_q++;
+				}
+				proc_q[select_q].push(proc_to_run);
+			}
+		}else{
+			// Scheduler should exit
+		}
+
+		current_time += time_to_run;
+	}
+
+	void set_queue_count( int n ){
+		queue<Process> q;
+		queue_count = n;
+		for (int i=0; i<n; i++){
+			proc_q.push_back(q);
+		}
+	}
+
+	vector<time_obj> run(){
+		while(!spawn_list.empty() || !proc_q.empty()){
+			run_block();
+		}
+		return timeline;
+	}
+
+	void add_process(Process new_proc){
+		proc_q[0].push(new_proc);
+	}
+
+	void spawn_process(list<Process> proc_list){
+		spawn_list = proc_list;
 	}
 };
