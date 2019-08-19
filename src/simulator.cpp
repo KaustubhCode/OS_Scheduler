@@ -10,23 +10,23 @@
 
 using namespace std;
 
-// void print_table(vector<Process> p)
-// {
-//     int i;
-//     int n = p.size();
+void print_table(vector<Process> p)
+{
+    int i;
+    int n = p.size();
 
+    puts("+-----+------------+--------------+------------------+--------------+----------------+");
+    puts("| PID | Burst Time | Waiting Time | Turn-Around Time | Arrival Time | Completion Time |");
+    puts("+-----+------------+--------------+------------------+--------------+----------------+");
 
-//     puts("+-----+------------+--------------+------------------+--------------+----------------+");
-//     puts("| PID | Burst Time | Waiting Time | Turn-Around Time | Arrival Time | Completion Time |");
-//     puts("+-----+------------+--------------+------------------+--------------+----------------+");
+    for(i=0; i<n; i++) {
+    	Process proc = p.at(i);
+        printf("| %2d  |     %0.2f     |      %0.2f      |        %0.2f       |      %0.2f      |       %0.2f       |\n"
+               , proc.pid, proc.proc_length, proc.wait_time, proc.turn_around_time, proc.arrival_time, proc.end_time);
+        puts("+-----+------------+--------------+-----------------+");
+    }
 
-//     for(i=0; i<n; i++) {
-//         printf("| %2d  |     %2d     |      %2d      |        %2d       |      %2d      |       %2d       |\n"
-//                , p.at(i).pid, p.at(i).burst_time, p.at(i).waiting_time, p.at(i).turnaround_time, p.at(i).arrivl_time, p.at(i).completion_time);
-//         puts("+-----+------------+--------------+-----------------+");
-//     }
-
-// }
+}
 
 
 // void print_gantt_chart(vector<Process> p, vector<time_obj> time)
@@ -114,6 +114,7 @@ int main(){
 	// sjf.spawn_process(proc_list);
 
 	vector<time_obj> fifo_t = fifo.run();
+	print_table(fifo.ret_list);
 	// print_gantt_chart(fifo.ret_list, fifo_t);
 
 

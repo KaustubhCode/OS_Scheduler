@@ -14,9 +14,9 @@ public:
 	double time_left;			// CPU time remaining to be processed
 	int status;				// 0: created, 1: after getting scheduled 1st time, 3:completed/killed
 	// For reporting
-	int turn_around_time;
-	int wait_time;
-	int response_time;
+	double turn_around_time;
+	double wait_time;
+	double response_time;
 
 	Process(int id, double at, double burst){
 		arrival_time = at;
