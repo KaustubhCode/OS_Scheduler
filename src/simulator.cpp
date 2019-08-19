@@ -38,23 +38,25 @@ void print_gantt_chart(vector<Process> p, vector<time_obj> time)
     // print top bar
     printf("+");
     for(i=0; i<n; i++) {
+    	printf("-");
         for(j=0; j<time.at(i).e_t-time.at(i).s_t; j++) printf("--");
-        printf("+");
+        printf("-+");
     }
     printf("\n|");
 
     // printing process id in the middle
     for(i=0; i<n; i++) {
         for(j=0; j< time.at(i).e_t-time.at(i).s_t - 1; j++) printf(" ");
-        printf("P%d", time.at(i).pid);
+        printf(" P%d ", time.at(i).pid);
         for(j=0; j< time.at(i).e_t-time.at(i).s_t - 1; j++) printf(" ");
         printf("|");
     }
-    printf("\n ");
+    printf("\n+");
     // printing bottom bar
     for(i=0; i<n; i++) {
+    	printf("-");
         for(j=0; j< time.at(i).e_t-time.at(i).s_t; j++) printf("--");
-        printf("+");
+        printf("-+");
     }
     printf("\n");
 
@@ -64,9 +66,9 @@ void print_gantt_chart(vector<Process> p, vector<time_obj> time)
         for(j=0; j<time.at(i).e_t-time.at(i).s_t; j++) printf("  ");
 
         // if(time.at(i).turn_around_time > 9) printf("\b"); // backspace : remove 1 space
-        if (time.at(i).e_t-time.at(i).s_t > 1) printf("\b\b\b\b%5.2f",time.at(i).e_t);
+        if (time.at(i).e_t-time.at(i).s_t > 1) printf("\b\b%5.2f",time.at(i).e_t);
     	else{
-    		printf("\b\b%3.1f",time.at(i).e_t);
+    		printf("%3.1f",time.at(i).e_t);
     	}
         // printf("\b%0.2f", time.at(i).e_t);
 
@@ -130,31 +132,47 @@ int main(){
 	srtf.spawn_process(proc_list);
 	mlfq.spawn_process(proc_list);
 
-	// vector<time_obj> fifo_t = fifo.run();
-	// print_table(fifo.ret_list);
-	// print_gantt_chart(fifo.ret_list, fifo_t);
+	printf("\n\n");
+	printf("*******************************************FIFO*******************************************\n\n");
+	vector<time_obj> fifo_t = fifo.run();
+	print_table(fifo.ret_list);
+	print_gantt_chart(fifo.ret_list, fifo_t);
 	// cout << fifo.spawn_list.size() << " " << fifo.proc_q.size() << endl;
+	printf("******************************************************************************************\n");
 
-	// vector<time_obj> rr_t = rr.run();
-	// print_table(rr.ret_list);
-	// print_gantt_chart(rr.ret_list, rr_t);
+	printf("\n\n");
 
-	// vector<time_obj> sjf_t = sjf.run();
-	// print_table(sjf.ret_list);
-	// print_gantt_chart(sjf.ret_list, sjf_t);
+	printf("********************************************RR********************************************\n\n");
+	vector<time_obj> rr_t = rr.run();
+	print_table(rr.ret_list);
+	print_gantt_chart(rr.ret_list, rr_t);
+	printf("******************************************************************************************\n");
 
+	printf("\n\n");
+
+	printf("*******************************************SJF********************************************\n\n");
+	vector<time_obj> sjf_t = sjf.run();
+	print_table(sjf.ret_list);
+	print_gantt_chart(sjf.ret_list, sjf_t);
+	printf("******************************************************************************************\n");
+
+	printf("\n\n");
+
+	printf("*******************************************SRTF*******************************************\n\n");
 	vector<time_obj> srtf_t = srtf.run();
 	print_table(srtf.ret_list);
 	print_gantt_chart(srtf.ret_list, srtf_t);
+	printf("******************************************************************************************\n");
 
+	printf("\n\n");
 
-	// vector<int> slice_list{1,2,3};
-	// mlfq.set_queue_count(3,slice_list);
-	// vector<time_obj> mlfq_t = mlfq.run();
-	// print_table(mlfq.ret_list);
-	// print_gantt_chart(mlfq.ret_list, mlfq_t);
+	printf("*******************************************MLFQ*******************************************\n\n");
+	vector<int> slice_list{1,2,3};
+	mlfq.set_queue_count(3,slice_list);
+	vector<time_obj> mlfq_t = mlfq.run();
+	print_table(mlfq.ret_list);
+	print_gantt_chart(mlfq.ret_list, mlfq_t);
+	printf("******************************************************************************************\n");
 
-	// vector<time_obj> rr_t = rr.run();
-	// vector<time_obj> sjf_t = sjf.run();
 }
 
