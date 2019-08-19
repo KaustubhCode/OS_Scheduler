@@ -356,6 +356,8 @@ class MLFQ_scheduler{
 public:
 	vector<int> time_slice_list;
 	int queue_count = 3;
+	double last_reset = 0;
+	double reset_time = 10;
 	double current_time;					// Global time of scheduler
 	vector<queue<Process> > proc_q;				// List of processes spawned and queued in Scheduler
 	list<Process> spawn_list;		// List of processes to be queued
@@ -377,6 +379,17 @@ public:
 			if (time_to_run > proc_to_run.time_left){
 				time_to_run = proc_to_run.time_left;
 			}
+			// Reset if needed
+			if (last_reset + reset_time < current_time + time_to_run){
+				for (int i=1; i<queue_count; i++){
+					while (!proc_q[i].empty()){
+						proc_q[0].push(proc_q[i].front());
+						proc_q[i].pop();
+					}
+				}
+				last_reset = current_time + reset_time;
+				return;
+			}
 			// Running Process
 			double time_left = proc_to_run.run(current_time, time_to_run);
 			timeline.push_back(time_obj(proc_to_run.pid, current_time, current_time+time_to_run));
@@ -395,9 +408,20 @@ public:
 			}
 		}else if ( select_q >= queue_count && !spawn_list.empty() ){
 			Process proc_to_spawn = spawn_list.front();		// Process to be spawned
+			time_to_run = proc_to_spawn.arrival_time - current_time;
+			// Reset if needed
+			if (last_reset + reset_time < current_time + time_to_run){
+				for (int i=1; i<queue_count; i++){
+					while (!proc_q[i].empty()){
+						proc_q[0].push(proc_q[i].front());
+						proc_q[i].pop();
+					}
+				}
+				last_reset = current_time + reset_time;
+				return;
+			}
 			add_process(proc_to_spawn);
 			spawn_list.pop_front();
-			time_to_run = proc_to_spawn.arrival_time - current_time;
 		}else if ( select_q < queue_count && !spawn_list.empty() ){
 			Process proc_to_run = proc_q[select_q].front();					// Process to be run
 			if (time_to_run > proc_to_run.time_left){
@@ -406,9 +430,29 @@ public:
 			// If process is to be spawned first
 			if (current_time+time_to_run > spawn_list.front().arrival_time){
 				Process proc_to_spawn = spawn_list.front();		// Process to be spawned
-				add_process(proc_to_spawn);
 				time_to_run = proc_to_spawn.arrival_time - current_time;
+				if (last_reset + reset_time < current_time + time_to_run){
+					for (int i=1; i<queue_count; i++){
+						while (!proc_q[i].empty()){
+							proc_q[0].push(proc_q[i].front());
+							proc_q[i].pop();
+						}
+					}
+					last_reset = current_time + reset_time;
+					return;
+				}
+				add_process(proc_to_spawn);
 				spawn_list.pop_front();
+			}
+			if (last_reset + reset_time < current_time + time_to_run){
+				for (int i=1; i<queue_count; i++){
+					while (!proc_q[i].empty()){
+						proc_q[0].push(proc_q[i].front());
+						proc_q[i].pop();
+					}
+				}
+				last_reset = current_time + reset_time;
+				return;
 			}
 			// Running Process
 			double time_left = proc_to_run.run(current_time, time_to_run);
