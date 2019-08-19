@@ -366,7 +366,7 @@ public:
 	void run_block(){
 		double time_to_run = 1;
 		int select_q = 0;
-		while ( proc_q[select_q].empty() ){	
+		while (select_q < queue_count && proc_q[select_q].empty() ){	
 			select_q++;
 		}
 		if (select_q < queue_count){

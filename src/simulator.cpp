@@ -26,6 +26,8 @@ void print_table(vector<Process> p)
         puts("+-----+------------+--------------+-----------------+");
     }
 
+    printf("\n");
+
 }
 
 
@@ -64,6 +66,7 @@ void print_gantt_chart(vector<Process> p, vector<time_obj> time)
         printf("%0.2f", time.at(i).e_t);
 
     }
+    printf("Problem?");
     printf("\n");
 }
 
@@ -75,8 +78,8 @@ int main(){
 	FIFO_scheduler fifo;
 	RR_scheduler rr;
 	SJF_scheduler sjf;
-	// SRTF_scheduler sjf;
-	// MLFQ_scheduler sjf;
+	SRTF_scheduler srtf;
+	MLFQ_scheduler mlfq;
 
 	int n; double lambda;
 	cout << "Number of Processes: ";
@@ -106,16 +109,22 @@ int main(){
 	double burst_time = - (log(r))/lambda;
 	Process new_proc(1,0,burst_time);
 	proc_list.push_back(new_proc);
+	printf("%0.2f ", burst_time);
 	for (int i = 0; i < n-1; i++){
 		double r = (((double) rand() / (RAND_MAX)) * (1-cap)) + cap;
 		double burst_time = - (log(r))/lambda;
+		printf("%0.2f ", burst_time);
 		Process new_proc(i+2,proc_times.at(i),burst_time);
 		proc_list.push_back(new_proc);
 	}
 
+	printf("\n");
+
 	fifo.spawn_process(proc_list);
 	rr.spawn_process(proc_list);
-	// sjf.spawn_process(proc_list);
+	sjf.spawn_process(proc_list);
+	srtf.spawn_process(proc_list);
+	mlfq.spawn_process(proc_list);
 
 	// vector<time_obj> fifo_t = fifo.run();
 	// print_table(fifo.ret_list);
@@ -125,6 +134,10 @@ int main(){
 	vector<time_obj> rr_t = rr.run();
 	print_table(rr.ret_list);
 	print_gantt_chart(rr.ret_list, rr_t);
+
+	vector<time_obj> mlfq_t = mlfq.run();
+	print_table(mlfq.ret_list);
+	print_gantt_chart(mlfq.ret_list, mlfq_t);
 
 	// vector<time_obj> rr_t = rr.run();
 	// vector<time_obj> sjf_t = sjf.run();
