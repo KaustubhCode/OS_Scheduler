@@ -38,7 +38,7 @@ public:
 			Process proc_to_run = proc_q.front();					// Process to be run
 			time_to_run = proc_to_run.time_left;
 			// Running Process
-			double time_left = proc_to_run.run(time_to_run);
+			double time_left = proc_to_run.run(current_time, time_to_run);
 			timeline.push_back(time_obj(proc_to_run.pid, current_time, current_time+time_to_run));
 			// Killing Process if needed
 			if (time_left <= 0){
@@ -64,7 +64,7 @@ public:
 				time_to_run = proc_to_spawn.arrival_time - current_time;
 			}
 			// Running Process
-			double time_left = proc_to_run.run(time_to_run);
+			double time_left = proc_to_run.run(current_time, time_to_run);
 			timeline.push_back(time_obj(proc_to_run.pid, current_time, current_time+time_to_run));
 			// Killing Process if needed
 			if (time_left <= 0){
@@ -82,13 +82,13 @@ public:
 	}
 
 	vector<time_obj> run(){
-		while(!spawn_list.empty() && !proc_q.empty()){
+		while(!spawn_list.empty() || !proc_q.empty()){
 			run_block();
 		}
 		return timeline;
 	}
 
-	void add_process(Process &new_proc){
+	void add_process(Process new_proc){
 		proc_q.push(new_proc);
 	}
 

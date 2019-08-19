@@ -117,6 +117,7 @@ int main(){
 	vector<time_obj> fifo_t = fifo.run();
 	print_table(fifo.ret_list);
 	print_gantt_chart(fifo.ret_list, fifo_t);
+	cout << fifo.spawn_list.size() << " " << fifo.proc_q.size() << endl;
 
 
 	// vector<time_obj> rr_t = rr.run();
