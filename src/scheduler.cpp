@@ -4,14 +4,20 @@
 #include "scheduler.h"
 using namespace std;
 
+// ************************************************
 // time_obj struct
+// ************************************************
 	time_obj::time_obj(int id, double s, double e){
 		pid = id;
 		s_t = s;
 		e_t = e;
 	}
+// ************************************************
 
-	// SJF Comparator
+
+// ************************************************
+// SJF Comparator
+// ************************************************
   int sjf_comp::operator() (const Process& p1, const Process& p2) 
   { 
       return p1.time_left > p2.time_left; 
@@ -20,9 +26,12 @@ using namespace std;
 	bool cmp(Process p1, Process p2){
 		return (p1.time_left < p2.time_left);
 	}
+// ************************************************
 
 
-	// FIFO Scheduler
+// ************************************************
+// FIFO Scheduler
+// ************************************************
 	void FIFO_scheduler::run_block(){
 		double time_to_run = 1;		// time to add to global time
 		// Process proc_to_run;
@@ -88,8 +97,12 @@ using namespace std;
 	void FIFO_scheduler::spawn_process(list<Process> proc_list){
 		spawn_list = proc_list;
 	}
+// ************************************************
 
-	// RR_scheduler
+
+// ************************************************
+// RR_scheduler
+// ************************************************
 	void RR_scheduler::run_block(){
 		double time_to_run = time_slice;		// time to add to global time
 		if ( !proc_q.empty() && spawn_list.empty() ){
@@ -160,8 +173,12 @@ using namespace std;
 	void RR_scheduler::spawn_process(list<Process> proc_list){
 		spawn_list = proc_list;
 	}
+// ************************************************
 
-	// SJF_scheduler
+
+// ************************************************
+// SJF_scheduler
+// ************************************************
 	void SJF_scheduler::run_block(){
 		double time_to_run;		// time to add to global time
 
@@ -207,9 +224,12 @@ using namespace std;
 	void SJF_scheduler::spawn_process(list<Process> proc_list){
 		spawn_list = proc_list;
 	}
+// ************************************************
 
 
-	// SRTF_scheduler Functions
+// ************************************************
+// SRTF_scheduler Functions
+// ************************************************
 	void SRTF_scheduler::run_block(){
 		double time_to_run;		// time to add to global time
 		if ( !proc_q.empty() && spawn_list.empty() ){
@@ -272,9 +292,12 @@ using namespace std;
 	void SRTF_scheduler::spawn_process(list<Process> proc_list){
 		spawn_list = proc_list;
 	}
+// ************************************************
 
 
-	// Functions
+// ************************************************
+// MLFQ Functions
+// ************************************************
 	void MLFQ_scheduler::run_block(){
 		double time_to_run;
 		int select_q = 0;
@@ -402,3 +425,4 @@ using namespace std;
 	void MLFQ_scheduler::spawn_process(list<Process> proc_list){
 		spawn_list = proc_list;
 	}
+// ************************************************
