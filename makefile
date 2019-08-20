@@ -12,12 +12,21 @@ DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 _OBJ = simulator.o scheduler.o process.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
-# all: $(EDIR)/process $(EDIR)/scheduler $(EDIR)/simulator
+all: $(EDIR)/simulator
 
-$(ODIR)/%.o: $(SDIR)/%.cpp $(DEPS)
+$(ODIR)/process.o: $(SDIR)/process.cpp
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-$(EDIR)/simulator: $(OBJ)
+$(ODIR)/scheduler.o: $(SDIR)/scheduler.cpp $(IDIR)/process.h
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+$(ODIR)/simulator.o: $(SDIR)/simulator.cpp $(IDIR)/scheduler.h $(IDIR)/process.h
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+# $(ODIR)/%.o: $(SDIR)/%.cpp $(DEPS)
+# 	$(CC) -c -o $@ $< $(CFLAGS)
+
+$(EDIR)/simulator: $(ODIR)/process.o $(ODIR)/scheduler.o $(ODIR)/simulator.o
 	$(CC) -o $@ $^ $(CFLAGS)
 
 # $(ODIR)/gl_sim.o: $(SDIR)/gl_sim.cpp

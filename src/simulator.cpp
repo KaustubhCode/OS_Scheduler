@@ -4,8 +4,8 @@
 #include <ctime>
 #include <vector>
 #include <list>
-#include "process.cpp"
-#include "scheduler.cpp"
+#include "process.h"
+#include "scheduler.h"
 
 
 using namespace std;
@@ -78,8 +78,6 @@ void print_gantt_chart(vector<Process> p, vector<time_obj> time)
 
 
 int main(){
-
-	cout << "TEST" << endl;
 	srand(time(NULL));
 	FIFO_scheduler fifo;
 	RR_scheduler rr;
